@@ -1,0 +1,24 @@
+{
+  "name": "dashboard-crm-updater",
+  "version": "1.0.0",
+  "description": "Script de automação para atualizar o Dashboard CRM",
+  "main": "update_dashboard.js",
+  "scripts": {
+    "update": "node update_dashboard.js",
+    "test": "echo \"No tests specified\" && exit 0"
+  },
+  "keywords": [
+    "dashboard",
+    "crm",
+    "automation",
+    "analytics"
+  ],
+  "author": "Dashboard CRM Team",
+  "license": "MIT",
+  "dependencies": {
+    "xlsx": "^0.18.5"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
