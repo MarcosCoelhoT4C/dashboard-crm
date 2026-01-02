@@ -1,0 +1,344 @@
+{
+  "media_periods": [
+    "2025|12"
+  ],
+  "cx_periods": [
+    "2024|11",
+    "2024|12",
+    "2025|01",
+    "2025|02",
+    "2025|03",
+    "2025|04",
+    "2025|05",
+    "2025|06",
+    "2025|07",
+    "2025|08",
+    "2025|09",
+    "2025|10",
+    "2025|11",
+    "2025|12"
+  ],
+  "all_channels": [
+    "Chat",
+    "Google Ads",
+    "Meta Ads",
+    "Voz",
+    "WhatsApp"
+  ],
+  "media_by_period_channel": [
+    {
+      "period": "2025|12",
+      "channel": "Google Ads",
+      "cost": 30267.18,
+      "conversions": 104.12,
+      "revenue": 345451.66,
+      "cac": 290.7,
+      "roas": 11.41
+    },
+    {
+      "period": "2025|12",
+      "channel": "Meta Ads",
+      "cost": 8258.76,
+      "conversions": 59.0,
+      "revenue": 20959.2,
+      "cac": 139.98,
+      "roas": 2.54
+    }
+  ],
+  "cx_by_period_channel": [
+    {
+      "period": "2024|11",
+      "channel": "Chat",
+      "nps": 7.28,
+      "csat": 8.19,
+      "nota_ia": 7.94
+    },
+    {
+      "period": "2024|11",
+      "channel": "Voz",
+      "nps": 7.02,
+      "csat": 7.7,
+      "nota_ia": 7.55
+    },
+    {
+      "period": "2024|11",
+      "channel": "WhatsApp",
+      "nps": 7.58,
+      "csat": 8.4,
+      "nota_ia": 8.08
+    },
+    {
+      "period": "2024|12",
+      "channel": "Chat",
+      "nps": 5.5,
+      "csat": 7.0,
+      "nota_ia": 6.7
+    },
+    {
+      "period": "2024|12",
+      "channel": "Voz",
+      "nps": 5.71,
+      "csat": 7.5,
+      "nota_ia": 6.64
+    },
+    {
+      "period": "2024|12",
+      "channel": "WhatsApp",
+      "nps": 7.86,
+      "csat": 9.29,
+      "nota_ia": 9.0
+    },
+    {
+      "period": "2025|01",
+      "channel": "Chat",
+      "nps": 7.78,
+      "csat": 7.78,
+      "nota_ia": 7.78
+    },
+    {
+      "period": "2025|01",
+      "channel": "Voz",
+      "nps": 8.0,
+      "csat": 8.0,
+      "nota_ia": 7.93
+    },
+    {
+      "period": "2025|01",
+      "channel": "WhatsApp",
+      "nps": 8.57,
+      "csat": 8.57,
+      "nota_ia": 8.57
+    },
+    {
+      "period": "2025|02",
+      "channel": "Chat",
+      "nps": 7.5,
+      "csat": 7.5,
+      "nota_ia": 7.25
+    },
+    {
+      "period": "2025|02",
+      "channel": "Voz",
+      "nps": 5.77,
+      "csat": 6.54,
+      "nota_ia": 6.46
+    },
+    {
+      "period": "2025|02",
+      "channel": "WhatsApp",
+      "nps": 7.14,
+      "csat": 8.57,
+      "nota_ia": 7.71
+    },
+    {
+      "period": "2025|03",
+      "channel": "Chat",
+      "nps": 6.36,
+      "csat": 7.27,
+      "nota_ia": 6.91
+    },
+    {
+      "period": "2025|03",
+      "channel": "Voz",
+      "nps": 6.92,
+      "csat": 8.08,
+      "nota_ia": 7.85
+    },
+    {
+      "period": "2025|03",
+      "channel": "WhatsApp",
+      "nps": 8.57,
+      "csat": 8.57,
+      "nota_ia": 8.57
+    },
+    {
+      "period": "2025|04",
+      "channel": "Chat",
+      "nps": 7.78,
+      "csat": 8.33,
+      "nota_ia": 8.33
+    },
+    {
+      "period": "2025|04",
+      "channel": "Voz",
+      "nps": 6.07,
+      "csat": 6.79,
+      "nota_ia": 6.57
+    },
+    {
+      "period": "2025|04",
+      "channel": "WhatsApp",
+      "nps": 5.71,
+      "csat": 5.71,
+      "nota_ia": 5.71
+    },
+    {
+      "period": "2025|05",
+      "channel": "Chat",
+      "nps": 8.89,
+      "csat": 10.0,
+      "nota_ia": 9.33
+    },
+    {
+      "period": "2025|05",
+      "channel": "Voz",
+      "nps": 5.33,
+      "csat": 6.33,
+      "nota_ia": 5.93
+    },
+    {
+      "period": "2025|05",
+      "channel": "WhatsApp",
+      "nps": 5.71,
+      "csat": 5.71,
+      "nota_ia": 5.57
+    },
+    {
+      "period": "2025|06",
+      "channel": "Chat",
+      "nps": 8.0,
+      "csat": 8.0,
+      "nota_ia": 7.8
+    },
+    {
+      "period": "2025|06",
+      "channel": "Voz",
+      "nps": 8.08,
+      "csat": 8.46,
+      "nota_ia": 8.23
+    },
+    {
+      "period": "2025|06",
+      "channel": "WhatsApp",
+      "nps": 6.43,
+      "csat": 7.14,
+      "nota_ia": 6.86
+    },
+    {
+      "period": "2025|07",
+      "channel": "Chat",
+      "nps": 2.22,
+      "csat": 3.89,
+      "nota_ia": 4.56
+    },
+    {
+      "period": "2025|07",
+      "channel": "Voz",
+      "nps": 4.33,
+      "csat": 4.67,
+      "nota_ia": 4.87
+    },
+    {
+      "period": "2025|07",
+      "channel": "WhatsApp",
+      "nps": 4.29,
+      "csat": 5.0,
+      "nota_ia": 5.14
+    },
+    {
+      "period": "2025|08",
+      "channel": "Chat",
+      "nps": 7.0,
+      "csat": 7.0,
+      "nota_ia": 7.0
+    },
+    {
+      "period": "2025|08",
+      "channel": "Voz",
+      "nps": 6.07,
+      "csat": 6.79,
+      "nota_ia": 6.57
+    },
+    {
+      "period": "2025|08",
+      "channel": "WhatsApp",
+      "nps": 5.71,
+      "csat": 5.71,
+      "nota_ia": 6.0
+    },
+    {
+      "period": "2025|09",
+      "channel": "Chat",
+      "nps": 7.22,
+      "csat": 7.78,
+      "nota_ia": 7.56
+    },
+    {
+      "period": "2025|09",
+      "channel": "Voz",
+      "nps": 6.07,
+      "csat": 7.14,
+      "nota_ia": 6.64
+    },
+    {
+      "period": "2025|09",
+      "channel": "WhatsApp",
+      "nps": 7.86,
+      "csat": 9.29,
+      "nota_ia": 9.14
+    },
+    {
+      "period": "2025|10",
+      "channel": "Chat",
+      "nps": 8.89,
+      "csat": 8.89,
+      "nota_ia": 8.78
+    },
+    {
+      "period": "2025|10",
+      "channel": "Voz",
+      "nps": 7.67,
+      "csat": 8.0,
+      "nota_ia": 7.93
+    },
+    {
+      "period": "2025|10",
+      "channel": "WhatsApp",
+      "nps": 8.57,
+      "csat": 8.57,
+      "nota_ia": 8.86
+    },
+    {
+      "period": "2025|11",
+      "channel": "Chat",
+      "nps": 6.24,
+      "csat": 6.82,
+      "nota_ia": 6.63
+    },
+    {
+      "period": "2025|11",
+      "channel": "Voz",
+      "nps": 5.98,
+      "csat": 7.1,
+      "nota_ia": 6.82
+    },
+    {
+      "period": "2025|11",
+      "channel": "WhatsApp",
+      "nps": 6.8,
+      "csat": 7.78,
+      "nota_ia": 7.48
+    },
+    {
+      "period": "2025|12",
+      "channel": "Chat",
+      "nps": 5.0,
+      "csat": 5.83,
+      "nota_ia": 6.33
+    },
+    {
+      "period": "2025|12",
+      "channel": "Voz",
+      "nps": 5.45,
+      "csat": 5.45,
+      "nota_ia": 6.18
+    },
+    {
+      "period": "2025|12",
+      "channel": "WhatsApp",
+      "nps": 6.0,
+      "csat": 6.0,
+      "nota_ia": 6.0
+    }
+  ]
+}

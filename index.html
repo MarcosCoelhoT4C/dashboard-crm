@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard CRM - Análise Avançada com Filtros</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        .filters {
+            background: #f8f9fa;
+            padding: 20px 30px;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .filter-group label {
+            color: #000;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+        
+        .filter-group select {
+            padding: 8px 12px;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            background: white;
+            color: #000;
+            cursor: pointer;
+            font-size: 0.95em;
+            min-width: 180px;
+        }
+        
+        .reset-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+        
+        .reset-btn:hover {
+            background: #764ba2;
+        }
+        
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid #e9ecef;
+            background: white;
+            overflow-x: auto;
+        }
+        
+        .tab-button {
+            flex: 1;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            border: none;
+            background: white;
+            color: #666;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+            white-space: nowrap;
+            min-width: 150px;
+        }
+        
+        .tab-button.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+            background: #f8f9fa;
+        }
+        
+        .tab-button:hover {
+            background: #f8f9fa;
+        }
+        
+        .tab-content {
+            display: none;
+            padding: 30px;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .kpi-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .kpi-card.secondary {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        
+        .kpi-card.tertiary {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+        
+        .kpi-card.quaternary {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        }
+        
+        .kpi-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .kpi-value {
+            font-size: 2.5em;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .kpi-unit {
+            font-size: 0.85em;
+            opacity: 0.8;
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 400px;
+            margin-bottom: 40px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .chart-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .charts-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .comparison-table th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        .comparison-table td {
+            padding: 15px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .comparison-table tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+        
+        .badge.positive {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .badge.negative {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .badge.neutral {
+            background: #e2e3e5;
+            color: #383d41;
+        }
+        
+        .filter-info {
+            background: #e3f2fd;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            font-size: 0.95em;
+            color: #0c5aa0;
+        }
+        
+        .filter-info strong {
+            color: #0c5aa0;
+        }
+        
+        .no-data-message {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+            color: #856404;
+            text-align: center;
+        }
+        
+        @media (max-width: 768px) {
+            .charts-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .kpi-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .filters {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .filter-group {
+                width: 100%;
+            }
+            
+            .filter-group select {
+                width: 100%;
+            }
+            
+            .tab-button {
+                min-width: 120px;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Dashboard CRM - Análise Avançada</h1>
+            <p>Atribuição, KPIs de Impacto e Experiência do Cliente</p>
+        </div>
+        
+        <div class="filters">
+            <div class="filter-group">
+                <label for="periodFilter">Período:</label>
+                <select id="periodFilter">
+                    <option value="">Todos os períodos</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="channelFilter">Canal:</label>
+                <select id="channelFilter">
+                    <option value="">Todos os canais</option>
+                </select>
+            </div>
+            <button class="reset-btn" onclick="resetFilters()">🔄 Resetar Filtros</button>
+        </div>
+        
+        <div class="filter-info" id="filterInfo">
+            <strong>📊 Filtros Aplicados:</strong> Nenhum filtro aplicado. Mostrando todos os dados.
+        </div>
+        
+        <div class="tabs">
+            <button class="tab-button active" onclick="switchTab('overview')">📈 Visão Geral</button>
+            <button class="tab-button" onclick="switchTab('media')">📺 Mídia</button>
+            <button class="tab-button" onclick="switchTab('kpis')">💰 KPIs</button>
+            <button class="tab-button" onclick="switchTab('cx')">😊 CX</button>
+        </div>
+        
+        <!-- TAB 1: VISÃO GERAL -->
+        <div id="overview" class="tab-content active">
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-label">Investimento Total</div>
+                    <div class="kpi-value" id="kpi-investment">R$ 0</div>
+                    <div class="kpi-unit">em mídia</div>
+                </div>
+                <div class="kpi-card secondary">
+                    <div class="kpi-label">Receita Gerada</div>
+                    <div class="kpi-value" id="kpi-revenue">R$ 0</div>
+                    <div class="kpi-unit">GA4</div>
+                </div>
+                <div class="kpi-card tertiary">
+                    <div class="kpi-label">ROAS Médio</div>
+                    <div class="kpi-value" id="kpi-roas">0x</div>
+                    <div class="kpi-unit">Retorno sobre investimento</div>
+                </div>
+                <div class="kpi-card quaternary">
+                    <div class="kpi-label">Conversões</div>
+                    <div class="kpi-value" id="kpi-conversions">0</div>
+                    <div class="kpi-unit">total</div>
+                </div>
+            </div>
+            
+            <div id="overviewCharts"></div>
+        </div>
+        
+        <!-- TAB 2: MÍDIA -->
+        <div id="media" class="tab-content">
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-label">CAC (Custo de Aquisição)</div>
+                    <div class="kpi-value" id="kpi-cac">R$ 0</div>
+                    <div class="kpi-unit">por cliente</div>
+                </div>
+                <div class="kpi-card secondary">
+                    <div class="kpi-label">ROAS</div>
+                    <div class="kpi-value" id="kpi-roas2">0x</div>
+                    <div class="kpi-unit">retorno</div>
+                </div>
+            </div>
+            
+            <div id="mediaCharts"></div>
+            
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Canal</th>
+                        <th>Investimento</th>
+                        <th>Conversões</th>
+                        <th>CAC</th>
+                        <th>ROAS</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="mediaTableBody">
+                    <tr><td colspan="6" style="text-align: center;">Carregando dados...</td></tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- TAB 3: KPIs -->
+        <div id="kpis" class="tab-content">
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-label">CAC Médio</div>
+                    <div class="kpi-value" id="kpi-cac-avg">R$ 0</div>
+                    <div class="kpi-unit">por cliente</div>
+                </div>
+                <div class="kpi-card secondary">
+                    <div class="kpi-label">Taxa de Conversão</div>
+                    <div class="kpi-value" id="kpi-conv-rate">0%</div>
+                    <div class="kpi-unit">do funil</div>
+                </div>
+                <div class="kpi-card tertiary">
+                    <div class="kpi-label">Receita Total</div>
+                    <div class="kpi-value" id="kpi-revenue-total">R$ 0</div>
+                    <div class="kpi-unit">gerada</div>
+                </div>
+                <div class="kpi-card quaternary">
+                    <div class="kpi-label">Eficiência</div>
+                    <div class="kpi-value" id="kpi-efficiency">0%</div>
+                    <div class="kpi-unit">ROI</div>
+                </div>
+            </div>
+            
+            <div id="kpiCharts"></div>
+        </div>
+        
+        <!-- TAB 4: EXPERIÊNCIA DO CLIENTE -->
+        <div id="cx" class="tab-content">
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-label">NPS Médio</div>
+                    <div class="kpi-value" id="kpi-nps">0</div>
+                    <div class="kpi-unit">em escala 0-10</div>
+                </div>
+                <div class="kpi-card secondary">
+                    <div class="kpi-label">CSAT Médio</div>
+                    <div class="kpi-value" id="kpi-csat">0</div>
+                    <div class="kpi-unit">satisfação</div>
+                </div>
+                <div class="kpi-card tertiary">
+                    <div class="kpi-label">Nota IA Média</div>
+                    <div class="kpi-value" id="kpi-nota-ia">0</div>
+                    <div class="kpi-unit">qualidade</div>
+                </div>
+            </div>
+            
+            <div id="cxCharts"></div>
+            
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Canal</th>
+                        <th>NPS</th>
+                        <th>CSAT</th>
+                        <th>Nota IA</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="cxTableBody">
+                    <tr><td colspan="5" style="text-align: center;">Carregando dados...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <script>
+        let dashboardData = null;
+        let charts = {};
+        let filteredData = {
+            media: [],
+            cx: []
+        };
+        
+        // Carregar dados JSON
+        async function loadData() {
+            try {
+                const response = await fetch('/dashboard_data_final.json');
+                dashboardData = await response.json();
+                
+                // Preencher dropdowns
+                populateFilters();
+                
+                // Carregar dados iniciais
+                applyFilters();
+            } catch (error) {
+                console.error('Erro ao carregar dados:', error);
+            }
+        }
+        
+        // Preencher dropdowns de filtro
+        function populateFilters() {
+            const periodSelect = document.getElementById('periodFilter');
+            const channelSelect = document.getElementById('channelFilter');
+            
+            // Períodos únicos (apenas os que têm dados)
+            const allPeriods = [...new Set([
+                ...dashboardData.media_periods,
+                ...dashboardData.cx_periods
+            ])].sort();
+            
+            allPeriods.forEach(period => {
+                const option = document.createElement('option');
+                option.value = period;
+                option.textContent = formatPeriod(period);
+                periodSelect.appendChild(option);
+            });
+            
+            // Canais
+            dashboardData.all_channels.forEach(channel => {
+                const option = document.createElement('option');
+                option.value = channel;
+                option.textContent = channel;
+                channelSelect.appendChild(option);
+            });
+        }
+        
+        // Formatar período
+        function formatPeriod(period) {
+            if (!period) return 'Todos';
+            const [year, month] = period.split('|');
+            const months = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+            return `${months[parseInt(month) - 1]} ${year}`;
+        }
+        
+        // Aplicar filtros (mantém seleção)
+        function applyFilters() {
+            const period = document.getElementById('periodFilter').value;
+            const channel = document.getElementById('channelFilter').value;
+            
+            // Filtrar dados de mídia
+            filteredData.media = dashboardData.media_by_period_channel.filter(item => {
+                const matchPeriod = !period || item.period === period;
+                const matchChannel = !channel || item.channel === channel;
+                return matchPeriod && matchChannel;
+            });
+            
+            // Filtrar dados de CX
+            filteredData.cx = dashboardData.cx_by_period_channel.filter(item => {
+                const matchPeriod = !period || item.period === period;
+                const matchChannel = !channel || item.channel === channel;
+                return matchPeriod && matchChannel;
+            });
+            
+            // Atualizar informações de filtro
+            updateFilterInfo(period, channel);
+            
+            // Atualizar dashboard
+            updateDashboard();
+        }
+        
+        // Atualizar informações de filtro
+        function updateFilterInfo(period, channel) {
+            const filterInfo = document.getElementById('filterInfo');
+            let text = '<strong>📊 Filtros Aplicados:</strong> ';
+            
+            if (period || channel) {
+                const parts = [];
+                if (period) parts.push(`Período: ${formatPeriod(period)}`);
+                if (channel) parts.push(`Canal: ${channel}`);
+                text += parts.join(' | ');
+            } else {
+                text += 'Nenhum filtro aplicado. Mostrando todos os dados.';
+            }
+            
+            filterInfo.innerHTML = text;
+        }
+        
+        // Resetar filtros
+        function resetFilters() {
+            document.getElementById('periodFilter').value = '';
+            document.getElementById('channelFilter').value = '';
+            applyFilters();
+        }
+        
+        // Atualizar dashboard
+        function updateDashboard() {
+            updateKPIs();
+            updateCharts();
+            updateTables();
+        }
+        
+        // Atualizar KPIs
+        function updateKPIs() {
+            if (filteredData.media.length === 0 && filteredData.cx.length === 0) {
+                document.getElementById('kpi-investment').textContent = 'R$ 0';
+                document.getElementById('kpi-revenue').textContent = 'R$ 0';
+                document.getElementById('kpi-roas').textContent = '0x';
+                document.getElementById('kpi-conversions').textContent = '0';
+                document.getElementById('kpi-cac').textContent = 'R$ 0';
+                document.getElementById('kpi-roas2').textContent = '0x';
+                document.getElementById('kpi-cac-avg').textContent = 'R$ 0';
+                document.getElementById('kpi-conv-rate').textContent = '0%';
+                document.getElementById('kpi-revenue-total').textContent = 'R$ 0';
+                document.getElementById('kpi-efficiency').textContent = '0%';
+                document.getElementById('kpi-nps').textContent = '0';
+                document.getElementById('kpi-csat').textContent = '0';
+                document.getElementById('kpi-nota-ia').textContent = '0';
+                return;
+            }
+            
+            // KPIs de Mídia
+            if (filteredData.media.length > 0) {
+                const totalCost = filteredData.media.reduce((sum, item) => sum + item.cost, 0);
+                const totalRevenue = filteredData.media.reduce((sum, item) => sum + item.revenue, 0);
+                const totalConversions = filteredData.media.reduce((sum, item) => sum + item.conversions, 0);
+                const avgRoas = filteredData.media.reduce((sum, item) => sum + item.roas, 0) / filteredData.media.length;
+                const avgCac = filteredData.media.reduce((sum, item) => sum + item.cac, 0) / filteredData.media.length;
+                
+                document.getElementById('kpi-investment').textContent = 'R$ ' + totalCost.toLocaleString('pt-BR', {maximumFractionDigits: 0});
+                document.getElementById('kpi-revenue').textContent = 'R$ ' + totalRevenue.toLocaleString('pt-BR', {maximumFractionDigits: 0});
+                document.getElementById('kpi-roas').textContent = avgRoas.toFixed(2) + 'x';
+                document.getElementById('kpi-conversions').textContent = totalConversions.toFixed(0);
+                document.getElementById('kpi-cac').textContent = 'R$ ' + avgCac.toLocaleString('pt-BR', {maximumFractionDigits: 0});
+                document.getElementById('kpi-roas2').textContent = avgRoas.toFixed(2) + 'x';
+                document.getElementById('kpi-cac-avg').textContent = 'R$ ' + avgCac.toLocaleString('pt-BR', {maximumFractionDigits: 0});
+                document.getElementById('kpi-conv-rate').textContent = ((totalConversions / (totalConversions + 100)) * 100).toFixed(2) + '%';
+                document.getElementById('kpi-revenue-total').textContent = 'R$ ' + totalRevenue.toLocaleString('pt-BR', {maximumFractionDigits: 0});
+                document.getElementById('kpi-efficiency').textContent = ((totalRevenue / totalCost - 1) * 100).toFixed(2) + '%';
+            }
+            
+            // KPIs de CX
+            if (filteredData.cx.length > 0) {
+                const avgNps = filteredData.cx.reduce((sum, item) => sum + item.nps, 0) / filteredData.cx.length;
+                const avgCsat = filteredData.cx.reduce((sum, item) => sum + item.csat, 0) / filteredData.cx.length;
+                const avgNotaIA = filteredData.cx.reduce((sum, item) => sum + item.nota_ia, 0) / filteredData.cx.length;
+                
+                document.getElementById('kpi-nps').textContent = avgNps.toFixed(2);
+                document.getElementById('kpi-csat').textContent = avgCsat.toFixed(2);
+                document.getElementById('kpi-nota-ia').textContent = avgNotaIA.toFixed(2);
+            }
+        }
+        
+        // Atualizar gráficos
+        function updateCharts() {
+            // Limpar gráficos anteriores
+            Object.keys(charts).forEach(key => {
+                if (charts[key]) charts[key].destroy();
+            });
+            charts = {};
+            
+            // Gráfico 1: Investimento vs Receita (Overview)
+            if (filteredData.media.length > 0) {
+                const channels = [...new Set(filteredData.media.map(d => d.channel))];
+                const costs = channels.map(ch => filteredData.media.filter(d => d.channel === ch).reduce((sum, d) => sum + d.cost, 0));
+                const revenues = channels.map(ch => filteredData.media.filter(d => d.channel === ch).reduce((sum, d) => sum + d.revenue, 0));
+                
+                const overviewCharts = document.getElementById('overviewCharts');
+                overviewCharts.innerHTML = `
+                    <div class="charts-row">
+                        <div class="chart-container">
+                            <div class="chart-title">Investimento vs Receita por Canal</div>
+                            <canvas id="investmentRevenueChart"></canvas>
+                        </div>
+                        <div class="chart-container">
+                            <div class="chart-title">Distribuição de Conversões</div>
+                            <canvas id="conversionDistributionChart"></canvas>
+                        </div>
+                    </div>
+                `;
+                
+                const ctx1 = document.getElementById('investmentRevenueChart').getContext('2d');
+                charts.investmentRevenue = new Chart(ctx1, {
+                    type: 'bar',
+                    data: {
+                        labels: channels,
+                        datasets: [
+                            {
+                                label: 'Investimento (R$)',
+                                data: costs,
+                                backgroundColor: '#667eea',
+                                borderRadius: 5
+                            },
+                            {
+                                label: 'Receita (R$)',
+                                data: revenues,
+                                backgroundColor: '#764ba2',
+                                borderRadius: 5
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: { beginAtZero: true, ticks: { color: '#666' }, grid: { color: '#e9ecef' } },
+                            x: { ticks: { color: '#666' }, grid: { display: false } }
+                        }
+                    }
+                });
+                
+                // Gráfico 2: Distribuição de Conversões
+                const conversions = channels.map(ch => filteredData.media.filter(d => d.channel === ch).reduce((sum, d) => sum + d.conversions, 0));
+                const ctx2 = document.getElementById('conversionDistributionChart').getContext('2d');
+                charts.conversionDistribution = new Chart(ctx2, {
+                    type: 'doughnut',
+                    data: {
+                        labels: channels,
+                        datasets: [{
+                            data: conversions,
+                            backgroundColor: ['#667eea', '#f093fb'],
+                            borderColor: 'white',
+                            borderWidth: 3
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false
+                    }
+                });
+            } else {
+                document.getElementById('overviewCharts').innerHTML = '<div class="no-data-message">Nenhum dado de mídia disponível para os filtros selecionados</div>';
+            }
+            
+            // Gráficos de Mídia
+            if (filteredData.media.length > 0) {
+                const channels = [...new Set(filteredData.media.map(d => d.channel))];
+                const roas = channels.map(ch => filteredData.media.filter(d => d.channel === ch).reduce((sum, d) => sum + d.roas, 0) / filteredData.media.filter(d => d.channel === ch).length);
+                
+                const mediaCharts = document.getElementById('mediaCharts');
+                mediaCharts.innerHTML = `
+                    <div class="charts-row">
+                        <div class="chart-container">
+                            <div class="chart-title">ROAS por Canal</div>
+                            <canvas id="channelPerformanceChart"></canvas>
+                        </div>
+                        <div class="chart-container">
+                            <div class="chart-title">CAC por Canal</div>
+                            <canvas id="cacChannelChart"></canvas>
+                        </div>
+                    </div>
+                `;
+                
+                const ctx3 = document.getElementById('channelPerformanceChart').getContext('2d');
+                charts.channelPerformance = new Chart(ctx3, {
+                    type: 'bar',
+                    data: {
+                        labels: channels,
+                        datasets: [{
+                            label: 'ROAS',
+                            data: roas,
+                            backgroundColor: '#43e97b',
+                            borderRadius: 5
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: { beginAtZero: true, ticks: { color: '#666' }, grid: { color: '#e9ecef' } },
+                            x: { ticks: { color: '#666' }, grid: { display: false } }
+                        }
+                    }
+                });
+                
+                // CAC por Canal
+                const cacs = channels.map(ch => filteredData.media.filter(d => d.channel === ch).reduce((sum, d) => sum + d.cac, 0) / filteredData.media.filter(d => d.channel === ch).length);
+                const ctx3b = document.getElementById('cacChannelChart').getContext('2d');
+                charts.cacChannel = new Chart(ctx3b, {
+                    type: 'bar',
+                    data: {
+                        labels: channels,
+                        datasets: [{
+                            label: 'CAC (R$)',
+                            data: cacs,
+                            backgroundColor: '#f5576c',
+                            borderRadius: 5
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: { beginAtZero: true, ticks: { color: '#666' }, grid: { color: '#e9ecef' } },
+                            x: { ticks: { color: '#666' }, grid: { display: false } }
+                        }
+                    }
+                });
+            } else {
+                document.getElementById('mediaCharts').innerHTML = '<div class="no-data-message">Nenhum dado de mídia disponível para os filtros selecionados</div>';
+            }
+            
+            // Gráficos de CX
+            if (filteredData.cx.length > 0) {
+                const channels = [...new Set(filteredData.cx.map(d => d.channel))];
+                const nps = channels.map(ch => filteredData.cx.filter(d => d.channel === ch).reduce((sum, d) => sum + d.nps, 0) / filteredData.cx.filter(d => d.channel === ch).length);
+                const csat = channels.map(ch => filteredData.cx.filter(d => d.channel === ch).reduce((sum, d) => sum + d.csat, 0) / filteredData.cx.filter(d => d.channel === ch).length);
+                
+                const cxCharts = document.getElementById('cxCharts');
+                cxCharts.innerHTML = `
+                    <div class="charts-row">
+                        <div class="chart-container">
+                            <div class="chart-title">NPS por Canal</div>
+                            <canvas id="npsChannelChart"></canvas>
+                        </div>
+                        <div class="chart-container">
+                            <div class="chart-title">CSAT por Canal</div>
+                            <canvas id="csatChannelChart"></canvas>
+                        </div>
+                    </div>
+                `;
+                
+                const ctx4 = document.getElementById('npsChannelChart').getContext('2d');
+                charts.npsChannel = new Chart(ctx4, {
+                    type: 'bar',
+                    data: {
+                        labels: channels,
+                        datasets: [{
+                            label: 'NPS',
+                            data: nps,
+                            backgroundColor: '#4facfe',
+                            borderRadius: 5
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: { beginAtZero: true, max: 10, ticks: { color: '#666' }, grid: { color: '#e9ecef' } },
+                            x: { ticks: { color: '#666' }, grid: { display: false } }
+                        }
+                    }
+                });
+                
+                const ctx5 = document.getElementById('csatChannelChart').getContext('2d');
+                charts.csatChannel = new Chart(ctx5, {
+                    type: 'bar',
+                    data: {
+                        labels: channels,
+                        datasets: [{
+                            label: 'CSAT',
+                            data: csat,
+                            backgroundColor: '#f093fb',
+                            borderRadius: 5
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: { beginAtZero: true, max: 10, ticks: { color: '#666' }, grid: { color: '#e9ecef' } },
+                            x: { ticks: { color: '#666' }, grid: { display: false } }
+                        }
+                    }
+                });
+            } else {
+                document.getElementById('cxCharts').innerHTML = '<div class="no-data-message">Nenhum dado de CX disponível para os filtros selecionados</div>';
+            }
+            
+            // Gráficos de KPIs
+            if (filteredData.media.length > 0) {
+                const channels = [...new Set(filteredData.media.map(d => d.channel))];
+                const roas = channels.map(ch => filteredData.media.filter(d => d.channel === ch).reduce((sum, d) => sum + d.roas, 0) / filteredData.media.filter(d => d.channel === ch).length);
+                const cacs = channels.map(ch => filteredData.media.filter(d => d.channel === ch).reduce((sum, d) => sum + d.cac, 0) / filteredData.media.filter(d => d.channel === ch).length);
+                
+                const kpiCharts = document.getElementById('kpiCharts');
+                kpiCharts.innerHTML = `
+                    <div class="charts-row">
+                        <div class="chart-container">
+                            <div class="chart-title">Comparativo de KPIs</div>
+                            <canvas id="kpiComparisonChart"></canvas>
+                        </div>
+                    </div>
+                `;
+                
+                const ctx6 = document.getElementById('kpiComparisonChart').getContext('2d');
+                charts.kpiComparison = new Chart(ctx6, {
+                    type: 'radar',
+                    data: {
+                        labels: channels,
+                        datasets: [
+                            {
+                                label: 'ROAS',
+                                data: roas,
+                                borderColor: '#43e97b',
+                                backgroundColor: 'rgba(67, 233, 123, 0.1)',
+                                borderWidth: 2
+                            },
+                            {
+                                label: 'CAC (normalizado)',
+                                data: cacs.map(c => Math.max(0, 10 - c/50)),
+                                borderColor: '#f5576c',
+                                backgroundColor: 'rgba(245, 87, 108, 0.1)',
+                                borderWidth: 2
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            r: {
+                                beginAtZero: true,
+                                ticks: { color: '#666' },
+                                grid: { color: '#e9ecef' }
+                            }
+                        }
+                    }
+                });
+            } else {
+                document.getElementById('kpiCharts').innerHTML = '<div class="no-data-message">Nenhum dado de KPI disponível para os filtros selecionados</div>';
+            }
+        }
+        
+        // Atualizar tabelas
+        function updateTables() {
+            // Tabela de Mídia
+            const mediaTableBody = document.getElementById('mediaTableBody');
+            mediaTableBody.innerHTML = '';
+            
+            if (filteredData.media.length > 0) {
+                const channels = [...new Set(filteredData.media.map(d => d.channel))];
+                channels.forEach(channel => {
+                    const channelData = filteredData.media.filter(d => d.channel === channel);
+                    const totalCost = channelData.reduce((sum, d) => sum + d.cost, 0);
+                    const totalConversions = channelData.reduce((sum, d) => sum + d.conversions, 0);
+                    const avgCac = totalCost / (totalConversions || 1);
+                    const avgRoas = channelData.reduce((sum, d) => sum + d.roas, 0) / channelData.length;
+                    
+                    const row = `
+                        <tr>
+                            <td><strong>${channel}</strong></td>
+                            <td>R$ ${totalCost.toLocaleString('pt-BR', {maximumFractionDigits: 0})}</td>
+                            <td>${totalConversions.toFixed(0)}</td>
+                            <td>R$ ${avgCac.toLocaleString('pt-BR', {maximumFractionDigits: 0})}</td>
+                            <td>${avgRoas.toFixed(2)}x</td>
+                            <td><span class="badge ${avgRoas > 5 ? 'positive' : avgRoas > 2 ? 'neutral' : 'negative'}">${avgRoas > 5 ? 'Excelente' : avgRoas > 2 ? 'Bom' : 'Ruim'}</span></td>
+                        </tr>
+                    `;
+                    mediaTableBody.innerHTML += row;
+                });
+            } else {
+                mediaTableBody.innerHTML = '<tr><td colspan="6" style="text-align: center;">Nenhum dado disponível para os filtros selecionados</td></tr>';
+            }
+            
+            // Tabela de CX
+            const cxTableBody = document.getElementById('cxTableBody');
+            cxTableBody.innerHTML = '';
+            
+            if (filteredData.cx.length > 0) {
+                const channels = [...new Set(filteredData.cx.map(d => d.channel))];
+                channels.forEach(channel => {
+                    const channelData = filteredData.cx.filter(d => d.channel === channel);
+                    const avgNps = channelData.reduce((sum, d) => sum + d.nps, 0) / channelData.length;
+                    const avgCsat = channelData.reduce((sum, d) => sum + d.csat, 0) / channelData.length;
+                    const avgNotaIA = channelData.reduce((sum, d) => sum + d.nota_ia, 0) / channelData.length;
+                    
+                    const row = `
+                        <tr>
+                            <td><strong>${channel}</strong></td>
+                            <td>${avgNps.toFixed(2)}</td>
+                            <td>${avgCsat.toFixed(2)}</td>
+                            <td>${avgNotaIA.toFixed(2)}</td>
+                            <td><span class="badge ${avgNps > 7 ? 'positive' : avgNps > 5 ? 'neutral' : 'negative'}">${avgNps > 7 ? 'Excelente' : avgNps > 5 ? 'Bom' : 'Ruim'}</span></td>
+                        </tr>
+                    `;
+                    cxTableBody.innerHTML += row;
+                });
+            } else {
+                cxTableBody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Nenhum dado disponível para os filtros selecionados</td></tr>';
+            }
+        }
+        
+        // Trocar abas
+        function switchTab(tabName) {
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            const buttons = document.querySelectorAll('.tab-button');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+            
+            setTimeout(() => {
+                Object.keys(charts).forEach(key => {
+                    if (charts[key]) charts[key].resize();
+                });
+            }, 100);
+        }
+        
+        // Event listeners
+        document.getElementById('periodFilter').addEventListener('change', applyFilters);
+        document.getElementById('channelFilter').addEventListener('change', applyFilters);
+        
+        // Carregar dados ao iniciar
+        document.addEventListener('DOMContentLoaded', loadData);
+    </script>
+</body>
+</html>
