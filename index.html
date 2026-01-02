@@ -520,7 +520,7 @@
         // Carregar dados JSON
         async function loadData() {
             try {
-                const response = await fetch('/dashboard_data_final.json');
+                const response = await fetch('data.json');
                 dashboardData = await response.json();
                 
                 // Preencher dropdowns
