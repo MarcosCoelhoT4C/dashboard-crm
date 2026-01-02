@@ -33,6 +33,30 @@
             color: white;
             padding: 30px;
             text-align: center;
+            position: relative;
+        }
+        
+        .update-btn {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 2px solid white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+        
+        .update-btn:hover {
+            background: white;
+            color: #667eea;
         }
         
         .header h1 {
@@ -324,6 +348,7 @@
 <body>
     <div class="container">
         <div class="header">
+            <a href="upload.html" class="update-btn">🔄 Atualizar Dados</a>
             <h1>📊 Dashboard CRM - Análise Avançada</h1>
             <p>Atribuição, KPIs de Impacto e Experiência do Cliente</p>
         </div>

@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atualizar Dashboard CRM</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 600px;
+            width: 100%;
+            padding: 40px;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .upload-section {
+            margin-bottom: 25px;
+        }
+
+        .upload-section label {
+            display: block;
+            color: #555;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-input-wrapper input[type=file] {
+            position: absolute;
+            left: -9999px;
+        }
+
+        .file-input-label {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 20px;
+            background: #f8f9fa;
+            border: 2px dashed #ddd;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .file-input-label:hover {
+            background: #e9ecef;
+            border-color: #667eea;
+        }
+
+        .file-input-label.has-file {
+            background: #e7f3ff;
+            border-color: #667eea;
+            border-style: solid;
+        }
+
+        .file-name {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .file-name.selected {
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .file-icon {
+            font-size: 24px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .progress-container {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: #e9ecef;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            width: 0%;
+            transition: width 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 12px;
+        }
+
+        .progress-text {
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .result.success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+
+        .result.error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 30px 20px;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 Atualizar Dashboard CRM</h1>
+        <p class="subtitle">Faça upload das planilhas Excel para atualizar os dados do dashboard</p>
+
+        <div class="upload-section">
+            <label for="bourbonFile">📈 Planilha Bourbon (Investimentos)</label>
+            <div class="file-input-wrapper">
+                <input type="file" id="bourbonFile" accept=".xlsx,.xls">
+                <label for="bourbonFile" class="file-input-label" id="bourbonLabel">
+                    <span class="file-name" id="bourbonName">Selecione o arquivo...</span>
+                    <span class="file-icon">📁</span>
+                </label>
+            </div>
+        </div>
+
+        <div class="upload-section">
+            <label for="cxFile">😊 Planilha CX Curadoria</label>
+            <div class="file-input-wrapper">
+                <input type="file" id="cxFile" accept=".xlsx,.xls">
+                <label for="cxFile" class="file-input-label" id="cxLabel">
+                    <span class="file-name" id="cxName">Selecione o arquivo...</span>
+                    <span class="file-icon">📁</span>
+                </label>
+            </div>
+        </div>
+
+        <button class="btn btn-primary" id="processBtn" disabled>
+            🚀 Processar e Atualizar Dashboard
+        </button>
+
+        <button class="btn btn-secondary" id="downloadBtn" style="display: none;">
+            💾 Baixar data.json
+        </button>
+
+        <div class="progress-container" id="progressContainer">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill">0%</div>
+            </div>
+            <div class="progress-text" id="progressText">Processando...</div>
+        </div>
+
+        <div class="result" id="result"></div>
+
+        <a href="index.html" class="back-link">← Voltar para o Dashboard</a>
+    </div>
+
+    <!-- SheetJS Library -->
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+    
+    <!-- Dashboard Updater -->
+    <script src="js/dashboard-updater.js"></script>
+
+    <script>
+        const bourbonFile = document.getElementById('bourbonFile');
+        const cxFile = document.getElementById('cxFile');
+        const bourbonLabel = document.getElementById('bourbonLabel');
+        const cxLabel = document.getElementById('cxLabel');
+        const bourbonName = document.getElementById('bourbonName');
+        const cxName = document.getElementById('cxName');
+        const processBtn = document.getElementById('processBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const progressContainer = document.getElementById('progressContainer');
+        const progressFill = document.getElementById('progressFill');
+        const progressText = document.getElementById('progressText');
+        const result = document.getElementById('result');
+
+        const updater = new DashboardUpdater();
+        let processedData = null;
+
+        // Atualizar UI quando arquivos são selecionados
+        bourbonFile.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                bourbonName.textContent = e.target.files[0].name;
+                bourbonName.classList.add('selected');
+                bourbonLabel.classList.add('has-file');
+            } else {
+                bourbonName.textContent = 'Selecione o arquivo...';
+                bourbonName.classList.remove('selected');
+                bourbonLabel.classList.remove('has-file');
+            }
+            checkFiles();
+        });
+
+        cxFile.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                cxName.textContent = e.target.files[0].name;
+                cxName.classList.add('selected');
+                cxLabel.classList.add('has-file');
+            } else {
+                cxName.textContent = 'Selecione o arquivo...';
+                cxName.classList.remove('selected');
+                cxLabel.classList.remove('has-file');
+            }
+            checkFiles();
+        });
+
+        // Verificar se ambos os arquivos foram selecionados
+        function checkFiles() {
+            processBtn.disabled = !(bourbonFile.files.length > 0 && cxFile.files.length > 0);
+        }
+
+        // Processar arquivos
+        processBtn.addEventListener('click', async () => {
+            try {
+                processBtn.disabled = true;
+                result.style.display = 'none';
+                progressContainer.style.display = 'block';
+                downloadBtn.style.display = 'none';
+
+                const bourbon = bourbonFile.files[0];
+                const cx = cxFile.files[0];
+
+                const response = await updater.processFiles(bourbon, cx, (message, progress) => {
+                    progressFill.style.width = `${progress}%`;
+                    progressFill.textContent = `${progress}%`;
+                    progressText.textContent = message;
+                });
+
+                processedData = response.data;
+
+                // Mostrar resultado
+                progressContainer.style.display = 'none';
+                result.className = 'result success';
+                result.style.display = 'block';
+                result.innerHTML = `
+                    <h3 style="margin-bottom: 10px;">✅ Processamento Concluído!</h3>
+                    <p>Os dados foram processados com sucesso.</p>
+                    <div class="stats">
+                        <div class="stat-card">
+                            <div class="stat-value">${response.stats.media_records}</div>
+                            <div class="stat-label">Registros de Mídia</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">${response.stats.cx_records}</div>
+                            <div class="stat-label">Registros de CX</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">${response.stats.periods}</div>
+                            <div class="stat-label">Períodos</div>
+                        </div>
+                    </div>
+                    <p style="margin-top: 15px; font-size: 14px;">
+                        <strong>Próximos passos:</strong><br>
+                        1. Baixe o arquivo data.json<br>
+                        2. Substitua o arquivo data.json no repositório<br>
+                        3. Faça commit e push para o GitHub<br>
+                        4. Aguarde 2-5 minutos para o dashboard atualizar
+                    </p>
+                `;
+
+                downloadBtn.style.display = 'block';
+
+            } catch (error) {
+                progressContainer.style.display = 'none';
+                result.className = 'result error';
+                result.style.display = 'block';
+                result.innerHTML = `
+                    <h3 style="margin-bottom: 10px;">❌ Erro no Processamento</h3>
+                    <p>${error.message}</p>
+                    <p style="margin-top: 10px; font-size: 12px;">
+                        Verifique se os arquivos estão no formato correto e contêm as sheets necessárias.
+                    </p>
+                `;
+                processBtn.disabled = false;
+            }
+        });
+
+        // Baixar JSON
+        downloadBtn.addEventListener('click', () => {
+            if (processedData) {
+                updater.downloadJSON('data.json');
+            }
+        });
+    </script>
+</body>
+</html>
