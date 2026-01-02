@@ -627,7 +627,12 @@
         
         // Atualizar KPIs
         function updateKPIs() {
-            if (filteredData.media.length === 0 && filteredData.cx.length === 0) {
+            // Verificar se há dados filtrados
+            const hasMediaData = filteredData.media.length > 0;
+            const hasCXData = filteredData.cx.length > 0;
+            
+            if (!hasMediaData && !hasCXData) {
+                // Sem dados - mostrar zeros
                 document.getElementById('kpi-investment').textContent = 'R$ 0';
                 document.getElementById('kpi-revenue').textContent = 'R$ 0';
                 document.getElementById('kpi-roas').textContent = '0x';
@@ -645,7 +650,7 @@
             }
             
             // KPIs de Mídia
-            if (filteredData.media.length > 0) {
+            if (hasMediaData) {
                 const totalCost = filteredData.media.reduce((sum, item) => sum + item.cost, 0);
                 const totalRevenue = filteredData.media.reduce((sum, item) => sum + item.revenue, 0);
                 const totalConversions = filteredData.media.reduce((sum, item) => sum + item.conversions, 0);
@@ -662,10 +667,22 @@
                 document.getElementById('kpi-conv-rate').textContent = ((totalConversions / (totalConversions + 100)) * 100).toFixed(2) + '%';
                 document.getElementById('kpi-revenue-total').textContent = 'R$ ' + totalRevenue.toLocaleString('pt-BR', {maximumFractionDigits: 0});
                 document.getElementById('kpi-efficiency').textContent = ((totalRevenue / totalCost - 1) * 100).toFixed(2) + '%';
+            } else {
+                // Sem dados de mídia - mostrar zeros
+                document.getElementById('kpi-investment').textContent = 'R$ 0';
+                document.getElementById('kpi-revenue').textContent = 'R$ 0';
+                document.getElementById('kpi-roas').textContent = '-';
+                document.getElementById('kpi-conversions').textContent = '0';
+                document.getElementById('kpi-cac').textContent = 'R$ 0';
+                document.getElementById('kpi-roas2').textContent = '-';
+                document.getElementById('kpi-cac-avg').textContent = 'R$ 0';
+                document.getElementById('kpi-conv-rate').textContent = '-';
+                document.getElementById('kpi-revenue-total').textContent = 'R$ 0';
+                document.getElementById('kpi-efficiency').textContent = '-';
             }
             
             // KPIs de CX
-            if (filteredData.cx.length > 0) {
+            if (hasCXData) {
                 const avgNps = filteredData.cx.reduce((sum, item) => sum + item.nps, 0) / filteredData.cx.length;
                 const avgCsat = filteredData.cx.reduce((sum, item) => sum + item.csat, 0) / filteredData.cx.length;
                 const avgNotaIA = filteredData.cx.reduce((sum, item) => sum + item.nota_ia, 0) / filteredData.cx.length;
@@ -673,6 +690,11 @@
                 document.getElementById('kpi-nps').textContent = avgNps.toFixed(2);
                 document.getElementById('kpi-csat').textContent = avgCsat.toFixed(2);
                 document.getElementById('kpi-nota-ia').textContent = avgNotaIA.toFixed(2);
+            } else {
+                // Sem dados de CX - mostrar zeros
+                document.getElementById('kpi-nps').textContent = '-';
+                document.getElementById('kpi-csat').textContent = '-';
+                document.getElementById('kpi-nota-ia').textContent = '-';
             }
         }
         
