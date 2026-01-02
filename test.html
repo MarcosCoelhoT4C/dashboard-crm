@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Dashboard</title>
+</head>
+<body>
+    <h1>Test Dashboard</h1>
+    <div id="status">Carregando...</div>
+    <div id="data"></div>
+    
+    <script>
+        console.log('Script loaded');
+        
+        async function loadData() {
+            console.log('loadData called');
+            const statusDiv = document.getElementById('status');
+            const dataDiv = document.getElementById('data');
+            
+            try {
+                console.log('Fetching data.json...');
+                const response = await fetch('data.json');
+                console.log('Response:', response.status, response.ok);
+                
+                const data = await response.json();
+                console.log('Data loaded:', data);
+                
+                statusDiv.textContent = 'Dados carregados com sucesso!';
+                dataDiv.innerHTML = `
+                    <h2>Dados Carregados:</h2>
+                    <p>Períodos de Mídia: ${data.media_periods.length}</p>
+                    <p>Períodos de CX: ${data.cx_periods.length}</p>
+                    <p>Canais: ${data.all_channels.join(', ')}</p>
+                    <p>Registros de Mídia: ${data.media_by_period_channel.length}</p>
+                    <p>Registros de CX: ${data.cx_by_period_channel.length}</p>
+                `;
+            } catch (error) {
+                console.error('Erro:', error);
+                statusDiv.textContent = 'Erro ao carregar dados: ' + error.message;
+            }
+        }
+        
+        // Carregar ao iniciar
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', loadData);
+        } else {
+            loadData();
+        }
+    </script>
+</body>
+</html>
